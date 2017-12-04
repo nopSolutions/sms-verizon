@@ -48,7 +48,7 @@ namespace Nop.Plugin.SMS.Verizon
             var order = eventMessage.Order;
 
             //send SMS
-            if (plugin.SendSms(String.Format("New order(#{0}) has been placed.", order.Id)))
+            if (plugin.SendSms($"New order(#{order.Id}) has been placed."))
             {
                 order.OrderNotes.Add(new OrderNote
                 {

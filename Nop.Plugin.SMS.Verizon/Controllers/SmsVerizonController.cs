@@ -1,35 +1,44 @@
 ﻿using System;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Nop.Core.Plugins;
 using Nop.Plugin.SMS.Verizon;
 using Nop.Plugin.Sms.Verizon.Models;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
+using Nop.Services.Security;
+using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Framework.Mvc.Filters;
 
 namespace Nop.Plugin.Sms.Verizon.Controllers
 {
-    [AdminAuthorize]
+    [AuthorizeAdmin]
+    [Area(AreaNames.Admin)]
     public class SmsVerizonController : BasePluginController
     {
         private readonly VerizonSettings _verizonSettings;
         private readonly ISettingService _settingService;
         private readonly IPluginFinder _pluginFinder;
         private readonly ILocalizationService _localizationService;
+        private readonly IPermissionService _permissionService;
 
         public SmsVerizonController(VerizonSettings verizonSettings,
             ISettingService settingService, IPluginFinder pluginFinder,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            IPermissionService permissionService)
         {
             this._verizonSettings = verizonSettings;
             this._settingService = settingService;
             this._pluginFinder = pluginFinder;
             this._localizationService = localizationService;
+            this._permissionService = permissionService;
         }
-
-        [ChildActionOnly]
-        public ActionResult Configure()
+       
+        public IActionResult Configure()
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
+                return AccessDeniedView();
+
             var model = new SmsVerizonModel
             {
                 Enabled = _verizonSettings.Enabled,
@@ -39,11 +48,13 @@ namespace Nop.Plugin.Sms.Verizon.Controllers
             return View("~/Plugins/SMS.Verizon/Views/Configure.cshtml", model);
         }
 
-        [ChildActionOnly]
         [HttpPost, ActionName("Configure")]
         [FormValueRequired("save")]
-        public ActionResult ConfigurePOST(SmsVerizonModel model)
+        public IActionResult ConfigurePOST(SmsVerizonModel model)
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
+                return AccessDeniedView();
+
             if (!ModelState.IsValid)
             {
                 return Configure();
@@ -59,14 +70,16 @@ namespace Nop.Plugin.Sms.Verizon.Controllers
             return Configure();
         }
 
-        [ChildActionOnly]
         [HttpPost, ActionName("Configure")]
         [FormValueRequired("test-sms")]
-        public ActionResult TestSms(SmsVerizonModel model)
+        public IActionResult TestSms(SmsVerizonModel model)
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
+                return AccessDeniedView();
+
             try
             {
-                if (String.IsNullOrEmpty(model.TestMessage))
+                if (string.IsNullOrEmpty(model.TestMessage))
                 {
                     ErrorNotification("Enter test message");
                 }

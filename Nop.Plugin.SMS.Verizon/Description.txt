@@ -1,9 +1,0 @@
-﻿Group: SMS providers
-FriendlyName: Verizon SMS Provider
-SystemName: Mobile.SMS.Verizon
-Version: 1.14
-SupportedVersions: 3.90
-Author: nopCommerce team
-DisplayOrder: 1
-FileName: Nop.Plugin.SMS.Verizon.dll
-Description: Verizon supports notifications about updates to your account or confirmations of payments or changes that are sent to you by text message. You can also receive Usage Alerts that notify you of your minutes, text or data usage.

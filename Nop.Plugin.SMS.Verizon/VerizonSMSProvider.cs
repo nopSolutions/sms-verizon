@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Messages;
 using Nop.Core.Plugins;
@@ -24,6 +23,7 @@ namespace Nop.Plugin.SMS.Verizon
         private readonly ISettingService _settingService;
         private readonly IStoreContext _storeContext;
         private readonly EmailAccountSettings _emailAccountSettings;
+        private readonly IWebHelper _webHelper;
 
         public VerizonSmsProvider(VerizonSettings verizonSettings,
             IQueuedEmailService queuedEmailService, 
@@ -31,7 +31,8 @@ namespace Nop.Plugin.SMS.Verizon
             ILogger logger,
             ISettingService settingService,
             IStoreContext storeContext,
-            EmailAccountSettings emailAccountSettings)
+            EmailAccountSettings emailAccountSettings,
+            IWebHelper webHelper)
         {
             this._verizonSettings = verizonSettings;
             this._queuedEmailService = queuedEmailService;
@@ -40,6 +41,7 @@ namespace Nop.Plugin.SMS.Verizon
             this._settingService = settingService;
             this._storeContext = storeContext;
             this._emailAccountSettings = emailAccountSettings;
+            this._webHelper = webHelper;
         }
 
         /// <summary>
@@ -51,9 +53,8 @@ namespace Nop.Plugin.SMS.Verizon
         {
             try
             {
-                var emailAccount = _emailAccountService.GetEmailAccountById(_emailAccountSettings.DefaultEmailAccountId);
-                if (emailAccount == null)
-                    emailAccount = _emailAccountService.GetAllEmailAccounts().FirstOrDefault();
+                var emailAccount = _emailAccountService.GetEmailAccountById(_emailAccountSettings.DefaultEmailAccountId) ?? _emailAccountService.GetAllEmailAccounts().FirstOrDefault();
+
                 if (emailAccount == null)
                     throw new Exception("No email account could be loaded");
 
@@ -81,17 +82,9 @@ namespace Nop.Plugin.SMS.Verizon
             }
         }
 
-        /// <summary>
-        /// Gets a route for provider configuration
-        /// </summary>
-        /// <param name="actionName">Action name</param>
-        /// <param name="controllerName">Controller name</param>
-        /// <param name="routeValues">Route values</param>
-        public void GetConfigurationRoute(out string actionName, out string controllerName, out RouteValueDictionary routeValues)
+        public override string GetConfigurationPageUrl()
         {
-            actionName = "Configure";
-            controllerName = "SmsVerizon";
-            routeValues = new RouteValueDictionary { { "Namespaces", "Nop.Plugin.SMS.Verizon.Controllers" }, { "area", null } };
+            return $"{_webHelper.GetStoreLocation()}Admin/SmsVerizon/Configure";
         }
 
         /// <summary>
