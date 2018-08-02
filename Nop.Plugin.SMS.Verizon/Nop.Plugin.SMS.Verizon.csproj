@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <Copyright>Copyright © Nop Solutions, Ltd</Copyright> 
     <Company>Nop Solutions, Ltd</Company> 
     <Authors>Nop Solutions, Ltd</Authors> 
-    <Version>1.20</Version> 
-    <Description>Verizon supports notifications about updates to your account or confirmations of payments or changes that are sent to you by text message</Description> 
     <PackageLicenseUrl></PackageLicenseUrl> 
     <PackageProjectUrl>http://www.nopcommerce.com/p/2375/verizon-sms-notification-plugin-nopcommerce-team.aspx</PackageProjectUrl> 
     <RepositoryUrl>https://github.com/nopSolutions/sms-verizon</RepositoryUrl> 

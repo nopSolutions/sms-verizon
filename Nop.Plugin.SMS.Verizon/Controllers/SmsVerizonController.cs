@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Nop.Core.Plugins;
 using Nop.Plugin.SMS.Verizon;
 using Nop.Plugin.Sms.Verizon.Models;
 using Nop.Services.Configuration;
@@ -9,6 +8,7 @@ using Nop.Services.Security;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
+using Nop.Services.Plugins;
 
 namespace Nop.Plugin.Sms.Verizon.Controllers
 {
@@ -16,22 +16,23 @@ namespace Nop.Plugin.Sms.Verizon.Controllers
     [Area(AreaNames.Admin)]
     public class SmsVerizonController : BasePluginController
     {
-        private readonly VerizonSettings _verizonSettings;
-        private readonly ISettingService _settingService;
-        private readonly IPluginFinder _pluginFinder;
         private readonly ILocalizationService _localizationService;
         private readonly IPermissionService _permissionService;
+        private readonly IPluginFinder _pluginFinder;
+        private readonly ISettingService _settingService;
+        private readonly VerizonSettings _verizonSettings;
 
-        public SmsVerizonController(VerizonSettings verizonSettings,
-            ISettingService settingService, IPluginFinder pluginFinder,
-            ILocalizationService localizationService,
-            IPermissionService permissionService)
+        public SmsVerizonController(ILocalizationService localizationService,
+            IPermissionService permissionService,
+            IPluginFinder pluginFinder,
+            ISettingService settingService,
+            VerizonSettings verizonSettings)
         {
-            this._verizonSettings = verizonSettings;
-            this._settingService = settingService;
-            this._pluginFinder = pluginFinder;
             this._localizationService = localizationService;
             this._permissionService = permissionService;
+            this._pluginFinder = pluginFinder;
+            this._settingService = settingService;
+            this._verizonSettings = verizonSettings;
         }
        
         public IActionResult Configure()
